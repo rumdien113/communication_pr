@@ -5,7 +5,7 @@ class Product(models.Model):
     name = models.CharField(max_length=100)
     price = models.IntegerField()
     description = models.TextField()
-    status = models.BooleanField(default=False)
+    status = models.BooleanField(default=True)
     image = models.TextField()
     post_id = models.TextField()
 

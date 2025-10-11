@@ -1,25 +1,124 @@
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
+    <meta charset="UTF-8">
     <title>Thêm sản phẩm</title>
+    <style>
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f5f7fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 420px;
+            background: #fff;
+            padding: 30px 40px;
+            margin: 60px auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 25px;
+        }
+
+        label {
+            font-weight: 600;
+            color: #444;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+            outline: none;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: #007bff;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        .error {
+            color: #d9534f;
+            background: #fcebea;
+            border: 1px solid #f5c6cb;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.25s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+    </style>
 </head>
 <body>
-    <h2>Thêm sản phẩm</h2>
-    {% if error %}
-        <div style="color: red; margin-bottom: 10px;">{{ error }}</div>
-    {% endif %}
-    <form method="post">
-        {% csrf_token %}
-        <label for="name">Tên sản phẩm:</label><br>
-        <input type="text" id="name" name="name" required><br><br>
+    <div class="container">
+        <h2>Thêm sản phẩm</h2>
 
-        <label for="price">Giá:</label><br>
-        <input type="number" id="price" name="price" required><br><br>
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
 
-        <label for="description">Mô tả:</label><br>
-        <textarea id="description" name="description" rows="5"></textarea><br><br>
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="name">Tên sản phẩm:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
 
-        <button type="submit">Lưu</button>
-    </form>
+            <div class="form-group">
+                <label for="price">Giá:</label>
+                <input type="number" id="price" name="price" required>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Mô tả:</label>
+                <textarea id="description" name="description" rows="4"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="image">Ảnh (URL):</label>
+                <input type="text" id="image" name="image">
+            </div>
+
+            <button type="submit">Lưu sản phẩm</button>
+        </form>
+    </div>
 </body>
 </html>
