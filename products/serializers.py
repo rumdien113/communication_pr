@@ -5,7 +5,7 @@ from .models import Product
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        exclude = ['post_id']
+        fields = ['id', 'name', 'price', 'description', 'status', 'image', 'post_id']
 
 class ProductPostIdSerializer(serializers.ModelSerializer):
     class Meta:
