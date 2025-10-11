@@ -54,13 +54,14 @@ class ProductHTMLView(View):
         name = request.POST.get('name')
         price = request.POST.get('price')
         description = request.POST.get('description')
+        image = request.POST.get('image')
 
         if name and price and description:
             Product.objects.create(
                 name=name,
                 price=int(price),
                 description=description,
-                image='',
+                image=image,
                 post_id=''
             )
             return redirect('product')
