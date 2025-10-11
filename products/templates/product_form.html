@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Thêm sản phẩm</title>
+</head>
+<body>
+    <h2>Thêm sản phẩm</h2>
+    {% if error %}
+        <div style="color: red; margin-bottom: 10px;">{{ error }}</div>
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        <label for="name">Tên sản phẩm:</label><br>
+        <input type="text" id="name" name="name" required><br><br>
+
+        <label for="price">Giá:</label><br>
+        <input type="number" id="price" name="price" required><br><br>
+
+        <label for="description">Mô tả:</label><br>
+        <textarea id="description" name="description" rows="5"></textarea><br><br>
+
+        <button type="submit">Lưu</button>
+    </form>
+</body>
+</html>

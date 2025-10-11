@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  backend:
+    build: .
+    container_name: communication_api
+    volumes:
+      - .:/app
+    ports: 
+      - "8011:8000"
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://postgres:password@db:5432/communication_db
+    depends_on:
+      - db
+    networks:
+      - communication_network
+    restart: unless-stopped
+
+  db:
+    image: postgres:15
+    container_name: communication_db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=communication_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5555:5432"
+    networks:
+      - communication_network
+    restart: unless-stopped
+
+  # n8n:
+  #   image: n8nio/n8n:latest
+  #   container_name: n8n
+  #   ports:
+  #     - "5678:5678"
+  #   environment:
+  #     - N8N_BASIC_AUTH_ACTIVE=true
+  #     - N8N_USER_MANAGEMENT_DISABLED=true
+  #     - N8N_BASIC_AUTH_USER=admin
+  #     - N8N_BASIC_AUTH_PASSWORD=admin123
+  #     - N8N_HOST=localhost
+  #     - N8N_PORT=5678
+  #     - NODE_ENV=production
+  #     - GENERIC_TIMEZONE=Asia/Ho_Chi_Minh
+  #   volumes:
+  #     - ./n8n_data:/home/node/.n8n
+  #   networks:
+  #     - communication_network
+  #   restart: unless-stopped
+  #   dns:
+  #     - 8.8.8.8
+  #     - 1.1.1.1
+
+volumes:
+  postgres_data:
+  # n8n_data:
+
+networks:
+  communication_network:
+    driver: bridge
