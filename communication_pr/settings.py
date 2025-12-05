@@ -79,7 +79,7 @@ DATABASES = {
         'NAME': 'communication_db',
         'USER': 'postgres',
         'PASSWORD': 'password',
-        'HOST': 'db',
+        'HOST': 'postgres',
         'PORT': '5432',
     }
 }
