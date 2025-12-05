@@ -9,14 +9,14 @@ services:
     ports: 
       - "8011:8000"
     environment:
-      - DATABASE_URL=postgresql+asyncpg://postgres:password@db:5432/communication_db
+      - DATABASE_URL=postgresql+asyncpg://postgres:password@postgres:5432/communication_db
     depends_on:
-      - db
+      - postgres
     networks:
       - communication_network
     restart: unless-stopped
 
-  db:
+  postgres:
     image: postgres:15
     container_name: communication_db
     environment:
@@ -31,32 +31,47 @@ services:
       - communication_network
     restart: unless-stopped
 
-  # n8n:
-  #   image: n8nio/n8n:latest
-  #   container_name: n8n
-  #   ports:
-  #     - "5678:5678"
-  #   environment:
-  #     - N8N_BASIC_AUTH_ACTIVE=true
-  #     - N8N_USER_MANAGEMENT_DISABLED=true
-  #     - N8N_BASIC_AUTH_USER=admin
-  #     - N8N_BASIC_AUTH_PASSWORD=admin123
-  #     - N8N_HOST=localhost
-  #     - N8N_PORT=5678
-  #     - NODE_ENV=production
-  #     - GENERIC_TIMEZONE=Asia/Ho_Chi_Minh
-  #   volumes:
-  #     - ./n8n_data:/home/node/.n8n
-  #   networks:
-  #     - communication_network
-  #   restart: unless-stopped
-  #   dns:
-  #     - 8.8.8.8
-  #     - 1.1.1.1
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    ports:
+      - "5080:80"
+    networks:
+      - communication_network
+    depends_on:
+      - postgres
+
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: communication_n8n
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=admin
+      - N8N_BASIC_AUTH_PASSWORD=admin
+      
+      - N8N_PORT=5678              
+      - N8N_PROTOCOL=http
+      - N8N_HOST=localhost
+      - WEBHOOK_URL=http://localhost:5678/
+      - N8N_EDITOR_BASE_URL=http://localhost:5678/
+    volumes:
+      - n8n_data:/home/node/.n8n      
+    ports:
+      - "5678:5678"
+    networks:
+      - communication_network
+    restart: always
 
 volumes:
   postgres_data:
-  # n8n_data:
+  n8n_data:
+  pgadmin_data:
 
 networks:
   communication_network:
