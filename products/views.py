@@ -27,6 +27,16 @@ class ProductViewSet(viewsets.ModelViewSet):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    @action(detail=True, methods=['patch'], url_path='update-description')
+    def update_description(self, request, pk=None):
+        """PATCH /api/product/<id>/update-description/"""
+        product = self.get_object()
+        serializer = ProductSerializer(product, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=True, methods=['patch'], url_path='update-post')
     def update_post_id(self, request, pk=None):
@@ -40,6 +50,14 @@ class ProductViewSet(viewsets.ModelViewSet):
             product.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    # get a product have status is False
+    @action(detail=False, methods=['get'], url_path='pending-products')
+    def pending_products(self, request):
+        """GET /api/product/pending-products/"""
+        pending_products = Product.objects.filter(status=False)
+        serializer = self.get_serializer(pending_products, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 # ---- HTML view riêng (không nằm trong ViewSet) ----
@@ -47,25 +65,29 @@ from django.views import View
 
 class ProductHTMLView(View):
     def get(self, request):
+        products = Product.objects.all()
         template = loader.get_template('product_form.html')
-        return HttpResponse(template.render({}, request))
+        return HttpResponse(template.render({'products': products}, request))
 
     def post(self, request):
         name = request.POST.get('name')
         price = request.POST.get('price')
-        description = request.POST.get('description')
-        image = request.POST.get('image')
 
-        if name and price and description:
+        if name and price:
             Product.objects.create(
                 name=name,
                 price=int(price),
-                description=description,
-                image=image,
+                description='',
+                image='',
                 post_id=''
             )
             return redirect('product')
-        else:
-            template = loader.get_template('product_form.html')
-            context = {'error': 'Vui lòng điền đầy đủ thông tin'}
-            return HttpResponse(template.render(context, request))
+
+        products = Product.objects.all()
+        template = loader.get_template('product_form.html')
+        context = {
+            'error': 'Vui lòng điền đầy đủ thông tin',
+            'products': products
+        }
+        return HttpResponse(template.render(context, request))
+
